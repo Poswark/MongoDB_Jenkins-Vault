@@ -14,7 +14,7 @@ pipeline {
                 script {
                     // Define los secretos y las variables de entorno
                     def secrets = [
-                        [path: 'secrets/creds/mongodb/*', engineVersion: 1, secretValues: [
+                        [path: 'secrets/creds/mongodb', engineVersion: 1, secretValues: [
                             [envVar: 'MONGO_USERNAME', vaultKey: 'MONGO_USERNAME'],
                             [envVar: 'MONGO_PASSWORD', vaultKey: 'MONGO_PASSWORD']
                         ]]
