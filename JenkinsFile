@@ -5,11 +5,11 @@ pipeline {
         stage('Approval') {
             steps {
                 script {
-                    def userInput = input(id: 'Confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'Confirm'] ])
+                    def userInput = input(id: 'Confirm', message: 'Apply vault?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply', name: 'Confirm'] ])
                 }
             }
         }
-        stage('Obtener secreto del Vault') {
+        stage('Get secret and run container') {
             steps {
                 script {
                     def secrets = [
@@ -24,9 +24,10 @@ pipeline {
                                          engineVersion: 1]
 
                     withVault([configuration: configuration, vaultSecrets: secrets]) {
-                        sh 'echo $MONGO_PASSWORD'
+                        
                         sh "docker run -p 27017:27017 --name mongodb -e MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME -e MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD -d mongo:latest"
-
+                        sh "echo 'Las credenciales utilizadas son' "
+                        sh 'echo $MONGO_PASSWORD'
                     }
                 }
             }
