@@ -12,7 +12,6 @@ pipeline {
         stage('Obtener secreto del Vault') {
             steps {
                 script {
-                    // Define los secretos y las variables de entorno
                     def secrets = [
                         [path: 'secrets/creds/mongodb', engineVersion: 1, secretValues: [
                             [envVar: 'MONGO_USERNAME', vaultKey: 'MONGO_USERNAME'],
@@ -20,23 +19,15 @@ pipeline {
                         ]]
                     ]
 
-                    // Configuración opcional, si no la proporcionas se usará la configuración global
                     def configuration = [vaultUrl: 'http://vault:8200',
                                          vaultCredentialId: 'vault-jenkins-role',
                                          engineVersion: 1]
 
-                    // Dentro de este bloque tus credenciales estarán disponibles como variables de entorno
                     withVault([configuration: configuration, vaultSecrets: secrets]) {
-                        // Utiliza la variable de entorno para acceder al secreto
                         sh 'echo $MONGO_PASSWORD'
+                        sh "docker run -p 27017:27017 --name mongodb -e MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME -e MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD -d mongo:latest"
+
                     }
-                }
-            }
-        }
-        stage('Run MongoDB Container') {
-            steps {
-                script {
-                    sh "docker run -p 27017:27017 --name mongodb -e MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME -e MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD -d mongo:latest"
                 }
             }
         }
