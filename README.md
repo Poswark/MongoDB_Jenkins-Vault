@@ -21,6 +21,7 @@ En este turorial vamos a ver lo siguiente
 Este proceso asegura un despliegue seguro y automatizado de un contenedor de MongoDB utilizando Jenkins y Vault. 
 
 
+![Evidencia del Job](demo.png)
 
 
 
